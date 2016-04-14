@@ -1,7 +1,5 @@
 package com.example.firstopengl;
 
-import static android.opengl.GLUtils.getEGLErrorString;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
