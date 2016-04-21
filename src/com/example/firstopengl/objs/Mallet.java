@@ -1,11 +1,7 @@
 package com.example.firstopengl.objs;
 
-import static android.opengl.GLES20.GL_POINTS;
-import static android.opengl.GLES20.glDrawArrays;
-
 import java.util.List;
 
-import com.example.firstopengl.data.Constants;
 import com.example.firstopengl.data.VertexArray;
 import com.example.firstopengl.objs.ObjsBuilder.DrawCmd;
 import com.example.firstopengl.objs.ObjsBuilder.GeneratedData;

@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -22,16 +25,53 @@ public class MainActivity extends Activity {
 		final ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 		final ConfigurationInfo ci = am.getDeviceConfigurationInfo();
 		final boolean supportsEs2 = ci.reqGlEsVersion >= 0x20000;
+		final MyRenderer renderer = new MyRenderer(this);
 		//3.为opengl es2.0配置渲染表面
 		if(supportsEs2){
 			glSurfaceView.setEGLContextClientVersion(2);
-			glSurfaceView.setRenderer(new MyRenderer(this));
+			glSurfaceView.setRenderer(renderer);
 			rendererSet = true;
 		} else {
 			Toast.makeText(this, "设备不支持opengl es 2.0", Toast.LENGTH_SHORT).show();
 			return;
 		}		
-		//4.显示GLSurfaceView
+		//4.glSurfaceView添加监听触控事件
+		glSurfaceView.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				if(event!=null){
+					//触屏坐标转化成归一化坐标，即[-1,1]
+					final float normalizedX = (event.getX()/(float)v.getWidth())*2-1;
+					final float normalizedY = -((event.getY()/(float)v.getHeight())*2-1);
+					//转发触控事件给渲染器
+					if(event.getAction() == MotionEvent.ACTION_DOWN){
+						glSurfaceView.queueEvent(new Runnable() {
+							
+							@Override
+							public void run() {
+								//调用渲染器按压事件
+								renderer.handleTouchPress(normalizedX,normalizedY);
+							}
+						});
+					} else if(event.getAction() == MotionEvent.ACTION_MOVE){
+						glSurfaceView.queueEvent(new Runnable() {
+							
+							@Override
+							public void run() {
+								//调用渲染器拖拽事件
+								renderer.handleTouchDrag(normalizedX,normalizedY);
+							}
+						});
+					}
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
+		//5.显示GLSurfaceView
 		setContentView(glSurfaceView);
 	}
 	
