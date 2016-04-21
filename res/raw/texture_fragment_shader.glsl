@@ -1,3 +1,4 @@
+//Æ¬¶Î×ÅÉ«Æ÷/res/raw/texture_fragment_shader.glsl
 precision mediump float;
 
 uniform sampler2D u_TextureUnit;
